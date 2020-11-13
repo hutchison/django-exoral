@@ -122,4 +122,9 @@ class Frage(models.Model):
             self.abgestimmte_benutzer.add(user)
             self.punkte = models.F('punkte') + 1
             self.save()
+
+    def downvote(self, user):
+        if user in self.abgestimmte_benutzer.all():
+            self.abgestimmte_benutzer.remove(user)
+            self.punkte = models.F('punkte') - 1
             self.save()
