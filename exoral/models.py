@@ -120,5 +120,6 @@ class Frage(models.Model):
     def upvote(self, user):
         if user not in self.abgestimmte_benutzer.all():
             self.abgestimmte_benutzer.add(user)
-            self.punkte = models.F('score') + 1
+            self.punkte = models.F('punkte') + 1
+            self.save()
             self.save()
