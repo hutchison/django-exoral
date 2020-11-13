@@ -105,7 +105,10 @@ class Frage(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Testat/Prüfung',
     )
-    abgestimmte_benutzer = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    abgestimmte_benutzer = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        blank=True,
+    )
 
     def __str__(self):
         return self.text[:20].strip()
