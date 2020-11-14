@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="container">
+  {% if testate %}
   <p>
     Hallo {{ name }},<br>
     hier sind die für dich interessanten Testate für {{ studiengang }} im {{ studienabschnitt }}:
@@ -14,5 +15,8 @@
   <p>
     Deine Einstellungen kannst du <a href="{% url 'fsmedhro_core:edit' %}" target="_blank">in deinem Profil</a> ändern.
   </p>
+  {% else %}
+  <p>Keine Testate gefunden. Bitte wende dich an den FSR, damit Testate erstellt werden.</p>
+  {% endif %}
 </div>
 {% endblock content %}
