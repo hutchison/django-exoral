@@ -4,7 +4,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.views.generic import DetailView, ListView
 
-
 from .models import (
     Dozent,
     Frage,
@@ -100,6 +99,7 @@ class UpvoteFrage(LoginRequiredMixin, View):
             pruefer_id=frage.pruefer.id,
         )
 
+
 class DownvoteFrage(LoginRequiredMixin, View):
     def get(self, request, frage_id):
         frage = get_object_or_404(Frage, pk=frage_id)
@@ -108,4 +108,52 @@ class DownvoteFrage(LoginRequiredMixin, View):
             'exoral:frage-list',
             testat_id=frage.testat.id,
             pruefer_id=frage.pruefer.id,
+        )
+
+
+class CreateFrage(LoginRequiredMixin, View):
+    model = Frage
+    fields = ['datum', 'text', 'antwort']
+    template_name = 'exoral/frage_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.testat = get_object_or_404(Testat, pk=self.kwargs['testat_id'])
+        self.pruefer = get_object_or_404(Dozent, pk=self.kwargs['pruefer_id'])
+        if self.pruefer.fach not in self.testat.fach.all():
+            error = (
+                'Prüfer und Testat passen nicht zusammen. '
+                'Das Fach des Prüfers muss in den Fächern des Testats '
+                'enthalten sein.'
+            )
+            return render(request, 'exoral/error.html', {'error': error})
+        else:
+            return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        context = {
+            'testat': self.testat,
+            'pruefer': self.pruefer,
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        datum = request.POST.get('datum')
+        text = request.POST.get('text').strip()
+        antwort = request.POST.get('antwort')
+
+        frage = Frage(
+            datum=datum,
+            text=text,
+            antwort=antwort,
+            pruefer=self.pruefer,
+            testat=self.testat,
+        )
+        frage.save()
+
+        frage.abgestimmte_benutzer.add(request.user)
+
+        return redirect(
+            'exoral:frage-list',
+            testat_id=self.testat.pk,
+            pruefer_id=self.pruefer.pk,
         )
