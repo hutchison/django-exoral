@@ -1,0 +1,5 @@
+include LICENSE
+include README.rst
+recursive-include exoral *.py
+recursive-include exoral/migrations *.py
+recursive-include exoral/templates *
