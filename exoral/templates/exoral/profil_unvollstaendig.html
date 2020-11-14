@@ -1,0 +1,12 @@
+{% extends "exoral/base.html" %}
+
+{% block content %}
+<div class="container">
+  <p>
+    Hallo {{ name }},<br>
+    leider ist dein Profil noch unvollständig.
+    Bitte <a href="{% url 'fsmedhro_core:edit' %}" target="_blank">aktualisiere
+    deinen Studiengang und deinen Studienabschnitt</a>, damit wir die zu dir passenden Testate anzeigen können.
+  </p>
+</div>
+{% endblock content %}

@@ -1,0 +1,25 @@
+{% extends "exoral/base.html" %}
+
+{% block content %}
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:home' %}">Testate</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+    </ol>
+  </nav>
+
+  {% for fach in object.fach.all %}
+  <h4>{{ fach }}</h4>
+  <ul>
+    {% for dozent in fach.dozent_set.all %}
+    <li><a href="{% url 'exoral:frage-list' object.pk dozent.pk %}">{{ dozent }}</a></li>
+    {% endfor %}
+  </ul>
+  {% empty %}
+  <p>
+    Keine Fächer eingetragen. Wende dich an den FSR, damit Fächer eingetragen werden.
+  </p>
+  {% endfor %}
+</div>
+{% endblock content %}

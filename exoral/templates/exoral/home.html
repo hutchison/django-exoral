@@ -1,0 +1,18 @@
+{% extends "exoral/base.html" %}
+
+{% block content %}
+<div class="container">
+  <p>
+    Hallo {{ name }},<br>
+    hier sind die für dich interessanten Testate für {{ studiengang }} im {{ studienabschnitt }}:
+  </p>
+  <ul>
+    {% for testat in testate %}
+    <li><a href="{% url 'exoral:testat-detail' testat.pk %}">{{ testat }}</a></li>
+    {% endfor %}
+  </ul>
+  <p>
+    Deine Einstellungen kannst du <a href="{% url 'fsmedhro_core:edit' %}" target="_blank">in deinem Profil</a> ändern.
+  </p>
+</div>
+{% endblock content %}
