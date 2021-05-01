@@ -21,11 +21,15 @@ class Fach(models.Model):
     def __str__(self):
         return self.name
 
+    def admin_list_dozent(self):
+        return ', '.join(doz.nachname for doz in self.dozent_set.all())
+    admin_list_dozent.short_description = 'Dozenten'
+
 
 class Dozent(models.Model):
     """
-    Nachname, Fach und aktiv sind zwingend erforderlich. Titel und Vorname sind
-    optional.
+    Nachname, Fach und aktiv sind zwingend erforderlich.
+    Titel und Vorname sind optional.
 
     Ein Dozent ist immer genau einem Fach zugeordnet.
     """
@@ -88,6 +92,18 @@ class Testat(models.Model):
         verbose_name_plural = "Testate"
         ordering = ("name",)
 
+    def admin_list_fach(self):
+        return ', '.join(fach.name for fach in self.fach.all())
+    admin_list_fach.short_description = 'Fächer'
+
+    def admin_list_studiengang(self):
+        return ', '.join(studgang.bezeichnung for studgang in self.studiengang.all())
+    admin_list_studiengang.short_description = 'Studiengänge'
+
+    def admin_list_studienabschnitt(self):
+        return ', '.join(studab.bezeichnung for studab in self.studienabschnitt.all())
+    admin_list_studienabschnitt.short_description = 'Studienabschnitte'
+
 
 class Frage(models.Model):
     datum = models.DateField(default=date.today, verbose_name="Prüfungsdatum")
@@ -111,7 +127,10 @@ class Frage(models.Model):
     )
 
     def __str__(self):
-        return self.text[:20].strip()
+        t = ' '.join(self.text.split()[:10])
+        if len(self.text) > len(t):
+            t += ' […]'
+        return t
 
     class Meta:
         verbose_name = "Frage"
