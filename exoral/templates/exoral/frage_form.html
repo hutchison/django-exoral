@@ -2,13 +2,16 @@
 
 {% block content %}
 <div class="container">
-  <p>
-    Bevor du eine neue Frage hinzufügst, vergewissere dich, ob sie wirklich neu ist.
-    Bereits vorhandenen Fragen kannst du Pluspunkte geben.
-  </p>
-  <p>
-    Bitte füge immer nur eine neue Frage hinzu. Gib mehrere Fragen als separate neue Fragen ein.
-  </p>
+  <div class="alert alert-warning" role="alert">
+    <p>
+      Bevor du eine neue Frage hinzufügst, vergewissere dich, ob sie wirklich neu ist.
+      Bereits vorhandenen Fragen kannst du Pluspunkte geben.
+    </p>
+    <p>
+      Bitte füge immer nur eine neue Frage hinzu. Gib mehrere Fragen als separate neue Fragen ein.
+    </p>
+  </div>
+
   <form method="post">
     {% csrf_token %}
     <div class="form-row">
