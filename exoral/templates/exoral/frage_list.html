@@ -1,6 +1,26 @@
 {% extends "exoral/base.html" %}
 
-{% load static %}
+{% load static sekizai_tags %}
+
+{% block js %}
+{% addtoblock "js" %}
+<script src="{% static 'js/helpers.js' %}"></script>
+<script charset="utf-8" type="text/javascript">
+  function setup() {
+    $("#suchfeld").keyup(function() {
+      var v = $(this).val();
+      if (v == '') {
+        $(".frage").show();
+      } else {
+        filter(".fragentext", v, elem => $(elem).parents('.frage').show(), elem => $(elem).parents('.frage').hide());
+      }
+    });
+  }
+
+  $(document).ready(setup);
+</script>
+{% endaddtoblock %}
+{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -15,8 +35,14 @@
     </ol>
   </nav>
 
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text" id="suche"><img src="{% static "img/icons/search.svg" %}"></span>
+    </div>
+    <input type="text" id="suchfeld" class="form-control" placeholder="Tippe zum Filtern" aria-label="Suche">
+  </div>
   {% for frage in fragen %}
-  <div class="card mb-2">
+  <div class="card mb-2 frage">
     <div class="card-body">
       <div class="row">
         <div class="col">
@@ -31,7 +57,7 @@
           {% endif %}
         </div>
       </div>
-      <p class="card-text">{{ frage.text }}</p>
+      <p class="card-text fragentext">{{ frage.text }}</p>
 
       {% if frage.antwort %}
       <a data-toggle="collapse" href="#antwort_{{ frage.pk }}" role="button" aria-expanded="false">Antwort</a>
