@@ -133,6 +133,10 @@ class CreateFrage(LoginRequiredMixin, View):
         context = {
             'testat': self.testat,
             'pruefer': self.pruefer,
+            'vorhandene_fragen': Frage.objects.filter(
+                pruefer=self.pruefer,
+                testat=self.testat,
+            ),
         }
         return render(request, self.template_name, context)
 

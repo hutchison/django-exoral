@@ -1,5 +1,39 @@
 {% extends "exoral/base.html" %}
 
+{% load static sekizai_tags %}
+
+{% block js %}
+{% addtoblock "js" %}
+<script charset="utf-8" src="{% static 'js/helpers.js' %}"></script>
+<script charset="utf-8" type="text/javascript">
+  function setup() {
+    $("#fragentext").keyup(function() {
+      var v = $(this).val();
+
+      if (v == '') {
+        $(".vorhandene_frage").hide();
+      } else {
+        filter(
+          ".vorhandene_frage",
+          v,
+          elem => { $(elem).show(); },
+          elem => { $(elem).hide(); }
+        );
+      }
+
+      if ($("p.vorhandene_frage").is(":visible")) {
+        $("#warnung_vorhandene_fragen").show();
+      } else {
+        $("#warnung_vorhandene_fragen").hide();
+      }
+    });
+  }
+
+  $(document).ready(setup);
+</script>
+{% endaddtoblock %}
+{% endblock %}
+
 {% block content %}
 <div class="container">
   <div class="alert alert-warning" role="alert">
@@ -31,6 +65,14 @@
     <div class="form-group">
       <label for="fragentext"><strong>Frage</strong></label>
       <textarea class="form-control" id="fragentext" name="text" rows=3 required></textarea>
+    </div>
+    <div id="vorhandene_fragen">
+      <div id="warnung_vorhandene_fragen" style="display: none;" class="alert alert-warning" role="alert">
+        Anscheinend existieren schon Fragen, die diesen Text enthalten. Bitte überprüfe, ob diese Frage wirklich neu ist!
+      </div>
+      {% for frage in vorhandene_fragen %}
+      <p class="vorhandene_frage" style="display: none;">{{ frage.text }}</p>
+      {% endfor %}
     </div>
     <div class="form-group">
       <label for="antwort">Antwort</label>
