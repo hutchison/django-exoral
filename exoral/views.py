@@ -42,11 +42,14 @@ class Home(LoginRequiredMixin, View):
             studienabschnitt=studienabschnitt,
         )
 
+        letzte_fragen = Frage.objects.order_by('-id')[:20]
+
         context.update(
             {
                 'studiengang': studiengang,
                 'studienabschnitt': studienabschnitt,
                 'testate': testate,
+                'letzte_fragen': letzte_fragen,
             }
         )
 

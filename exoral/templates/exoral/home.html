@@ -2,21 +2,50 @@
 
 {% block content %}
 <div class="container">
-  {% if testate %}
-  <p>
-    Hallo {{ name }},<br>
-    hier sind die für dich interessanten Testate für {{ studiengang }} im {{ studienabschnitt }}:
-  </p>
-  <ul>
-    {% for testat in testate %}
-    <li><a href="{% url 'exoral:testat-detail' testat.pk %}">{{ testat }}</a></li>
-    {% endfor %}
-  </ul>
-  <p>
-    Deine Einstellungen kannst du <a href="{% url 'fsmedhro_core:edit' %}" target="_blank">in deinem Profil</a> ändern.
-  </p>
-  {% else %}
-  <p>Keine Testate gefunden. Bitte wende dich an den FSR, damit Testate erstellt werden.</p>
+  <div class="row">
+    <div class="col">
+      {% if testate %}
+      <p>
+        Hallo {{ name }},<br>
+        hier sind die für dich interessanten Testate für {{ studiengang }} im {{ studienabschnitt }}:
+      </p>
+      <ul>
+        {% for testat in testate %}
+        <li><a href="{% url 'exoral:testat-detail' testat.pk %}">{{ testat }}</a></li>
+        {% endfor %}
+      </ul>
+      <p>
+        Deine Einstellungen kannst du <a href="{% url 'fsmedhro_core:edit' %}" target="_blank">in deinem Profil</a> ändern.
+      </p>
+      {% else %}
+      <p>Keine Testate gefunden. Bitte wende dich an den FSR, damit Testate erstellt werden.</p>
+      {% endif %}
+    </div>
+  </div>
+  {% if user.is_staff %}
+  <div class="row">
+    <div class="col">
+      <h6>Die letzten 20 Fragen:</h6>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Frage</th>
+            <th>Prüfer</th>
+            <th>Testat</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for frage in letzte_fragen %}
+          <tr>
+            <td><a href="{% url 'admin:exoral_frage_change' frage.id %}" target="_blank">{{ frage }}</a></td>
+            <td><a href="{% url 'admin:exoral_dozent_change' frage.pruefer.id %}" target="_blank">{{ frage.pruefer }}</a></td>
+            <td><a href="{% url 'admin:exoral_testat_change' frage.testat.id %}" target="_blank">{{ frage.testat }}</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
   {% endif %}
 </div>
 {% endblock content %}
