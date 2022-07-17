@@ -5,17 +5,28 @@
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:home' %}">Testate</a></li>
-      <li class="breadcrumb-item active" aria-current="page">{{ object }}</li>
+      <li class="breadcrumb-item active" aria-current="page">{{ testat }}</li>
     </ol>
   </nav>
 
-  {% for fach in object.fach.all %}
+  {% for fach, dozenten in faecher.items %}
   <h4>{{ fach }}</h4>
-  <ul>
-    {% for dozent in fach.dozent_set.all %}
-    <li><a href="{% url 'exoral:frage-list' object.pk dozent.pk %}">{{ dozent }}</a></li>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Prüfer:in</th>
+        <th>Anzahl Fragen</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for dozent, anz_fragen in dozenten.items %}
+      <tr>
+        <td><a href="{% url 'exoral:frage-list' testat.pk dozent.pk %}">{{ dozent }}</a></td>
+        <td>{{ anz_fragen }}</td>
+      </tr>
     {% endfor %}
-  </ul>
+    </tbody>
+  </table>
   {% empty %}
   <p>
     Keine Fächer eingetragen. Wende dich an den FSR, damit Fächer eingetragen werden.

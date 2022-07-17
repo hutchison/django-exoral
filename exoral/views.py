@@ -60,6 +60,27 @@ class TestatDetail(LoginRequiredMixin, DetailView):
     model = Testat
     pk_url_kwarg = 'testat_id'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        faecher = dict()  # Dict[Fach → Dict[Dozent → Int]]
+        testat = self.object
+        fragen = list(
+            Frage.objects.prefetch_related(
+                'testat',
+                'pruefer',
+            ).filter(testat=testat)
+        )
+
+        for fach in testat.fach.prefetch_related('dozent_set'):
+            faecher[fach] = dict()  # Dict[Dozent → int]
+            for dozent in fach.dozent_set.all():
+                faecher[fach][dozent] = len(
+                    [frage for frage in fragen if frage.pruefer==dozent]
+                )
+
+        context['faecher'] = faecher
+        return context
+
 
 class FrageList(LoginRequiredMixin, ListView):
     model = Frage
