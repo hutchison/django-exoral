@@ -11,4 +11,6 @@ urlpatterns = [
     path('upvote/<int:frage_id>', views.UpvoteFrage.as_view(), name='upvote-frage'),
     path('downvote/<int:frage_id>', views.DownvoteFrage.as_view(), name='downvote-frage'),
     path('neuefrage/<int:testat_id>/<int:pruefer_id>', views.CreateFrage.as_view(), name='frage-create'),
+    path('frage/<int:frage_id>/edit', views.FrageEdit.as_view(), name='frage-edit'),
+    path('frage/<int:frage_id>/delete', views.FrageDelete.as_view(), name='frage-delete'),
 ]

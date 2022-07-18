@@ -1,8 +1,11 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 from django.views import View
 from django.views.generic import DetailView, ListView
+from django.views.generic.edit import UpdateView, DeleteView
+from django.contrib import messages
 
 from .models import (
     Dozent,
@@ -42,7 +45,10 @@ class Home(LoginRequiredMixin, View):
             studienabschnitt=studienabschnitt,
         )
 
-        letzte_fragen = Frage.objects.order_by('-id')[:20]
+        letzte_fragen = Frage.objects.prefetch_related(
+            'pruefer',
+            'testat'
+        ).order_by('-id')[:20]
 
         context.update(
             {
@@ -113,6 +119,41 @@ class FrageList(LoginRequiredMixin, ListView):
         return context
 
 
+class FrageEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'exoral.change_frage'
+
+    model = Frage
+    fields = ['datum', 'text', 'antwort', 'pruefer', 'testat']
+    pk_url_kwarg = 'frage_id'
+    template_name_suffix = '_edit'
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
+        return reverse('exoral:frage-edit', kwargs={'frage_id': self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['dozenten'] = Dozent.objects.all()
+        context['testate'] = Testat.objects.all()
+        return context
+
+
+class FrageDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'exoral.delete_frage'
+
+    model = Frage
+    pk_url_kwarg = 'frage_id'
+
+    def get_success_url(self):
+        testat = self.object.testat
+        pruefer = self.object.pruefer
+        messages.add_message(self.request, messages.SUCCESS, 'Gelöscht!')
+        return reverse(
+            'exoral:frage-list',
+            kwargs={'testat_id': testat.id, 'pruefer_id': pruefer.id}
+        )
+
+
 class UpvoteFrage(LoginRequiredMixin, View):
     def get(self, request, frage_id):
         frage = get_object_or_404(Frage, pk=frage_id)
@@ -145,8 +186,8 @@ class CreateFrage(LoginRequiredMixin, View):
         self.pruefer = get_object_or_404(Dozent, pk=self.kwargs['pruefer_id'])
         if self.pruefer.fach not in self.testat.fach.all():
             error = (
-                'Prüfer und Testat passen nicht zusammen. '
-                'Das Fach des Prüfers muss in den Fächern des Testats '
+                'Prüfer:in und Testat passen nicht zusammen. '
+                'Das Fach des:r Prüfers:in muss in den Fächern des Testats '
                 'enthalten sein.'
             )
             return render(request, 'exoral/error.html', {'error': error})

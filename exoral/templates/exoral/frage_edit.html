@@ -1,0 +1,49 @@
+{% extends "exoral/base.html" %}
+
+{% block content %}
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:home' %}">Testate</a></li>
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:testat-detail' frage.testat.id %}">{{ frage.testat }}</a></li>
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:frage-list' frage.testat.id frage.pruefer.id %}">{{ frage.pruefer }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">bearbeiten</li>
+    </ol>
+  </nav>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group col-md-2">
+        <label for="id_datum"><strong>Datum</strong></label>
+        <input type="date" class="form-control" id="id_datum" name="datum" value="{{ frage.datum|date:'Y-m-d' }}" required>
+      </div>
+      <div class="form-group col-md-5">
+        <label for="pruefer"><strong>Prüfer:in</strong></label>
+        <select name="pruefer" id="pruefer" class="custom-select">
+          {% for dozent in dozenten %}
+          <option value="{{ dozent.id }}" {% if frage.pruefer == dozent %}selected{% endif %}>{{ dozent }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group col-md-5">
+        <label for="testat"><strong>Testat</strong></label>
+        <select name="testat" id="testat" class="custom-select">
+          {% for testat in testate %}
+          <option value="{{ testat.id }}" {% if frage.testat == testat %}selected{% endif %}>{{ testat }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="fragentext"><strong>Frage</strong></label>
+      <textarea class="form-control" id="fragentext" name="text" rows=3 required>{{ frage.text }}</textarea>
+    </div>
+    <div class="form-group">
+      <label for="antwort">Antwort</label>
+      <textarea class="form-control" id="antwort" name="antwort" rows=3>{{ frage.antwort }}</textarea>
+    </div>
+    <input type="submit" class="btn btn-primary" value="Speichern">
+  </form>
+</div>
+{% endblock content %}

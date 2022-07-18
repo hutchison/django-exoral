@@ -41,6 +41,7 @@
     </div>
     <input type="text" id="suchfeld" class="form-control" placeholder="Tippe zum Filtern" aria-label="Suche">
   </div>
+
   {% for frage in fragen %}
   <div class="card mb-2 frage">
     <div class="card-body">
@@ -63,6 +64,20 @@
       <a data-toggle="collapse" href="#antwort_{{ frage.pk }}" role="button" aria-expanded="false">Antwort</a>
       <div class="collapse" id="antwort_{{ frage.pk }}">
         <p>{{ frage.antwort }}</p>
+      </div>
+      {% endif %}
+      {% if perms.exoral.change_frage or perms.exoral.delete_frage %}
+      <div class="row">
+        {% if perms.exoral.change_frage %}
+        <div class="col">
+          <small><a href="{% url 'exoral:frage-edit' frage.id %}" target="_blank">bearbeiten</a></small>
+        </div>
+        {% endif %}
+        {% if perms.exoral.delete_frage %}
+        <div class="col text-right">
+          <small><a href="{% url 'exoral:frage-delete' frage.id %}" target="_blank" class="text-danger">Löschen</a></small>
+        </div>
+        {% endif %}
       </div>
       {% endif %}
     </div>

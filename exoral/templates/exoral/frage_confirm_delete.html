@@ -1,0 +1,45 @@
+{% extends "exoral/base.html" %}
+
+
+{% block content %}
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:home' %}">Testate</a></li>
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:testat-detail' frage.testat.id %}">{{ frage.testat }}</a></li>
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:frage-list' frage.testat.id frage.pruefer.id %}">{{ frage.pruefer }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Löschen?</li>
+    </ol>
+  </nav>
+
+  <form method="post">
+    {% csrf_token %}
+    <p>Möchtest du die folgende Frage wirklich löschen?</p>
+    <div class="form-row">
+      <div class="col">
+        <label>Prüfer:in</label>
+        <input type="text" class="form-control" placeholder="{{ frage.pruefer }}" readonly />
+      </div>
+      <div class="col">
+        <label>Testat</label>
+        <input type="text" class="form-control" placeholder="{{ frage.testat }}" readonly />
+      </div>
+      <div class="col">
+        <label>Datum</label>
+        <input type="text" class="form-control" placeholder="{{ frage.datum }}" readonly />
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Frage</label>
+      <textarea rows="3" class="form-control" readonly>{{ frage.text }}</textarea>
+    </div>
+    {% if frage.antwort %}
+    <div class="form-group">
+      <label>Antwort</label>
+      <textarea rows="3" class="form-control" readonly>{{ frage.antwort }}</textarea>
+    </div>
+    {% endif %}
+    <input type="submit" class="btn btn-danger" value="Ja, ich möchte sie löschen">
+  </form>
+</div>
+{% endblock content %}
