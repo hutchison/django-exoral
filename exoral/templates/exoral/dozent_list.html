@@ -1,0 +1,31 @@
+{% extends "exoral/base.html" %}
+
+{% block content %}
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:home' %}">Testate</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Dozenten</li>
+    </ol>
+  </nav>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Titel</th>
+        <th>Name</th>
+        <th>Fach</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for dozent in dozent_list %}
+      <tr>
+        <td>{{ dozent.titel }}</td>
+        <td>{{ dozent.vorname }} {{ dozent.nachname }}</td>
+        <td>{{ dozent.fach }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

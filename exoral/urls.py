@@ -13,4 +13,5 @@ urlpatterns = [
     path('neuefrage/<int:testat_id>/<int:pruefer_id>', views.CreateFrage.as_view(), name='frage-create'),
     path('frage/<int:frage_id>/edit', views.EditFrage.as_view(), name='frage-edit'),
     path('frage/<int:frage_id>/delete', views.FrageDelete.as_view(), name='frage-delete'),
+    path('dozenten', views.ListDozent.as_view(), name='dozent-list'),
 ]

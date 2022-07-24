@@ -226,3 +226,7 @@ class CreateFrage(LoginRequiredMixin, View):
             testat_id=self.testat.pk,
             pruefer_id=self.pruefer.pk,
         )
+
+
+class ListDozent(LoginRequiredMixin, ListView):
+    queryset = Dozent.objects.prefetch_related('fach')
