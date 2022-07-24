@@ -119,7 +119,7 @@ class ListFrage(LoginRequiredMixin, ListView):
         return context
 
 
-class FrageEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class EditFrage(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'exoral.change_frage'
 
     model = Frage
