@@ -22,7 +22,7 @@
       {% endif %}
     </div>
   </div>
-  {% if user.is_staff %}
+  {% if perms.exoral.change_frage %}
   <div class="row">
     <div class="col">
       <h6>Die letzten 20 Fragen:</h6>
