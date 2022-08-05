@@ -25,6 +25,18 @@
   {% if perms.exoral.change_frage %}
   <div class="row">
     <div class="col">
+      <h6>Übersichten</h6>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <p>
+        <a href="{% url 'exoral:dozent-list' %}" target="_blank">Dozenten</a>
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
       <h6>Die letzten 20 Fragen:</h6>
       <table class="table table-striped">
         <thead>
