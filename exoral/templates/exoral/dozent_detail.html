@@ -1,0 +1,60 @@
+{% extends "exoral/base.html" %}
+
+{% block content %}
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:home' %}">Testate</a></li>
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:dozent-list' %}">Dozenten</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ dozent }}</li>
+      {% if perms.exoral.change_dozent %}
+      <li class="breadcrumb-item" aria-current="page">bearbeiten</li>
+      {% endif %}
+    </ol>
+  </nav>
+
+  <table class="table">
+    <tbody>
+      <tr>
+        <th>Titel</th>
+        <td>{{ dozent.titel }}</td>
+      </tr>
+      <tr>
+        <th>Name</th>
+        <td>{{ dozent.name }}</td>
+      </tr>
+      <tr>
+        <th>Fach</th>
+        <td>{{ dozent.fach }}</td>
+      </tr>
+      <tr>
+        <th>aktiv?</th>
+        <td>{% if dozent.aktiv %}✓{% else %}✗{% endif %}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Datum</th>
+        <th>Frage</th>
+        <th>Fach</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for frage in dozent.frage_set.all %}
+      <tr>
+        <td>{{ frage.datum }}</td>
+        <td>
+          {{ frage.text }}<br />
+
+          <a href="{% url 'exoral:frage-edit' frage.id %}"">bearbeiten</a>
+        </td>
+        <td>{{ frage.testat }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

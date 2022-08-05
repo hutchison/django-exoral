@@ -230,3 +230,8 @@ class CreateFrage(LoginRequiredMixin, View):
 
 class ListDozent(LoginRequiredMixin, ListView):
     queryset = Dozent.objects.prefetch_related('fach')
+
+
+class DozentDetail(LoginRequiredMixin, DetailView):
+    model = Dozent
+    pk_url_kwarg = 'dozent_id'

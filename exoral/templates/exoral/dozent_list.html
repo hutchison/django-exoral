@@ -21,7 +21,7 @@
       {% for dozent in dozent_list %}
       <tr>
         <td>{{ dozent.titel }}</td>
-        <td>{{ dozent.vorname }} {{ dozent.nachname }}</td>
+        <td><a href="{% url 'exoral:dozent-detail' dozent.id %}">{{ dozent.vorname }} {{ dozent.nachname }}</a></td>
         <td>{{ dozent.fach }}</td>
       </tr>
       {% endfor %}
