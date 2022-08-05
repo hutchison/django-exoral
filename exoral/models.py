@@ -46,6 +46,15 @@ class Dozent(models.Model):
         verbose_name_plural = "Dozenten"
         ordering = ("nachname",)
 
+    def name(self):
+        """
+        [Vorname] [Nachname]
+        """
+        if self.vorname:
+            return f"{self.vorname} {self.nachname}"
+        else:
+            return self.nachname
+
     def full_name(self):
         """
         [Titel] [Vorname] [Nachname]
