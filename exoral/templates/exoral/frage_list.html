@@ -2,6 +2,16 @@
 
 {% load static sekizai_tags %}
 
+{% block css %}
+{% addtoblock "css" %}
+<style type="text/css" media="screen">
+.fragentext {
+  white-space: pre-line;
+}
+</style>
+{% endaddtoblock %}
+{% endblock css %}
+
 {% block js %}
 {% addtoblock "js" %}
 <script src="{% static 'js/helpers.js' %}"></script>
