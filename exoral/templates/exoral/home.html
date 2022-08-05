@@ -32,6 +32,7 @@
             <th>Frage</th>
             <th>Prüfer:in</th>
             <th>Testat</th>
+            <th>Datum</th>
           </tr>
         </thead>
         <tbody>
@@ -40,6 +41,7 @@
             <td><a href="{% url 'exoral:frage-edit' frage.id %}" target="_blank">{{ frage }}</a></td>
             <td><a href="{% url 'admin:exoral_dozent_change' frage.pruefer.id %}" target="_blank">{{ frage.pruefer }}</a></td>
             <td><a href="{% url 'admin:exoral_testat_change' frage.testat.id %}" target="_blank">{{ frage.testat }}</a></td>
+            <td>{{ frage.datum }}</td>
           </tr>
           {% endfor %}
         </tbody>
