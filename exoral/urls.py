@@ -18,4 +18,5 @@ urlpatterns = [
     path('dozent/<int:dozent_id>', views.DozentDetail.as_view(), name='dozent-detail'),
     path('dozent/<int:dozent_id>/edit', views.DozentEdit.as_view(), name='dozent-edit'),
     path('faecher', views.FachList.as_view(), name='fach-list'),
+    path('fach/<int:fach_id>/edit', views.FachEdit.as_view(), name='fach-edit'),
 ]

@@ -20,7 +20,7 @@
     <tbody>
       {% for fach in fach_list %}
       <tr>
-        <td>{{ fach.name }}</td>
+        <td><a href="{% url 'exoral:fach-edit' fach.id %}">{{ fach.name }}</a></td>
         <td>
           {% for dozent in fach.dozent_set.all %}
           <a href="{% url 'exoral:dozent-detail' dozent.id %}">{{ dozent }}</a>{% if not forloop.last %}, {% endif %}

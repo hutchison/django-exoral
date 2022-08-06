@@ -268,3 +268,16 @@ class DozentEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
 
 class FachList(LoginRequiredMixin, ListView):
     queryset = Fach.objects.prefetch_related('dozent_set', 'testat_set')
+
+
+class FachEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'exoral.change_fach'
+
+    model = Fach
+    fields = ['name']
+    pk_url_kwarg = 'fach_id'
+    template_name_suffix = '_edit'
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
+        return reverse('exoral:fach-list')
