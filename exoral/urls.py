@@ -15,4 +15,5 @@ urlpatterns = [
     path('frage/<int:frage_id>/delete', views.FrageDelete.as_view(), name='frage-delete'),
     path('dozenten', views.DozentList.as_view(), name='dozent-list'),
     path('dozent/<int:dozent_id>', views.DozentDetail.as_view(), name='dozent-detail'),
+    path('faecher', views.FachList.as_view(), name='fach-list'),
 ]

@@ -9,6 +9,7 @@ from django.contrib import messages
 
 from .models import (
     Dozent,
+    Fach,
     Frage,
     Testat,
 )
@@ -235,3 +236,7 @@ class DozentList(LoginRequiredMixin, ListView):
 class DozentDetail(LoginRequiredMixin, DetailView):
     model = Dozent
     pk_url_kwarg = 'dozent_id'
+
+
+class FachList(LoginRequiredMixin, ListView):
+    queryset = Fach.objects.prefetch_related('dozent_set', 'testat_set')
