@@ -1,5 +1,6 @@
 {% extends "exoral/base.html" %}
 
+{% load static %}
 {% block content %}
 <div class="container">
   <nav aria-label="breadcrumb">
@@ -39,6 +40,7 @@
       <tr>
         <th>Datum</th>
         <th>Frage</th>
+        <th><img src="{% static "img/icons/plus-square.svg" %}"></th>
         <th>Fach</th>
       </tr>
     </thead>
@@ -51,6 +53,7 @@
 
           <a href="{% url 'exoral:frage-edit' frage.id %}"">bearbeiten</a>
         </td>
+        <td>{{ frage.punkte }}</td>
         <td>{{ frage.testat }}</td>
       </tr>
       {% endfor %}
