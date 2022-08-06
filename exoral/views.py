@@ -63,6 +63,16 @@ class Home(LoginRequiredMixin, View):
         return render(request, 'exoral/home.html', context)
 
 
+class TestatList(LoginRequiredMixin, ListView):
+    queryset = Testat.objects.prefetch_related(
+        'fach',
+        'studiengang',
+        'studienabschnitt',
+        'frage_set',
+    )
+    context_object_name = 'testate'
+
+
 class TestatDetail(LoginRequiredMixin, DetailView):
     model = Testat
     pk_url_kwarg = 'testat_id'

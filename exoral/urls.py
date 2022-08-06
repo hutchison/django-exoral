@@ -6,6 +6,7 @@ app_name = 'exoral'
 
 urlpatterns = [
     path('', views.Home.as_view(), name='home'),
+    path('testate', views.TestatList.as_view(), name='testat-list'),
     path('testat/<int:testat_id>', views.TestatDetail.as_view(), name='testat-detail'),
     path('fragen/<int:testat_id>/<int:pruefer_id>', views.FrageList.as_view(), name='frage-list'),
     path('upvote/<int:frage_id>', views.FrageUpvote.as_view(), name='upvote-frage'),
