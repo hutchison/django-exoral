@@ -88,7 +88,7 @@ class TestatDetail(LoginRequiredMixin, DetailView):
         return context
 
 
-class ListFrage(LoginRequiredMixin, ListView):
+class FrageList(LoginRequiredMixin, ListView):
     model = Frage
     context_object_name = 'fragen'
 
