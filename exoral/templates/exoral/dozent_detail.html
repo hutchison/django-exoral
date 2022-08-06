@@ -48,8 +48,7 @@
       {% for frage in dozent.frage_set.all %}
       <tr>
         <td>{{ frage.datum }}</td>
-        <td>
-          {{ frage.text }}<br />
+        <td style="white-space: pre-line;">{{ frage.text }}
 
           <a href="{% url 'exoral:frage-edit' frage.id %}">bearbeiten</a>
         </td>
