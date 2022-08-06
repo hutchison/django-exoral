@@ -228,7 +228,7 @@ class CreateFrage(LoginRequiredMixin, View):
         )
 
 
-class ListDozent(LoginRequiredMixin, ListView):
+class DozentList(LoginRequiredMixin, ListView):
     queryset = Dozent.objects.prefetch_related('fach')
 
 
