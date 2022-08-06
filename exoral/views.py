@@ -119,7 +119,7 @@ class FrageList(LoginRequiredMixin, ListView):
         return context
 
 
-class EditFrage(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class FrageEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'exoral.change_frage'
 
     model = Frage
@@ -154,7 +154,7 @@ class FrageDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
         )
 
 
-class UpvoteFrage(LoginRequiredMixin, View):
+class FrageUpvote(LoginRequiredMixin, View):
     def get(self, request, frage_id):
         frage = get_object_or_404(Frage, pk=frage_id)
         frage.upvote(request.user)
@@ -165,7 +165,7 @@ class UpvoteFrage(LoginRequiredMixin, View):
         )
 
 
-class DownvoteFrage(LoginRequiredMixin, View):
+class FrageDownvote(LoginRequiredMixin, View):
     def get(self, request, frage_id):
         frage = get_object_or_404(Frage, pk=frage_id)
         frage.downvote(request.user)
@@ -176,7 +176,7 @@ class DownvoteFrage(LoginRequiredMixin, View):
         )
 
 
-class CreateFrage(LoginRequiredMixin, View):
+class FrageCreate(LoginRequiredMixin, View):
     model = Frage
     fields = ['datum', 'text', 'antwort']
     template_name = 'exoral/frage_form.html'
