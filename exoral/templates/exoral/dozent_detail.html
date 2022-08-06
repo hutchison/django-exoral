@@ -10,7 +10,7 @@
       <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:dozent-list' %}">Dozenten</a></li>
       <li class="breadcrumb-item active" aria-current="page">{{ dozent }}</li>
       {% if perms.exoral.change_dozent %}
-      <li class="breadcrumb-item" aria-current="page">bearbeiten</li>
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:dozent-edit' dozent.id %}">bearbeiten</a></li>
       {% endif %}
     </ol>
   </nav>

@@ -238,5 +238,23 @@ class DozentDetail(LoginRequiredMixin, DetailView):
     pk_url_kwarg = 'dozent_id'
 
 
+class DozentEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'exoral.change_dozent'
+
+    model = Dozent
+    fields = '__all__'
+    pk_url_kwarg = 'dozent_id'
+    template_name_suffix = '_edit'
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
+        return reverse('exoral:dozent-detail', kwargs={'dozent_id': self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['faecher'] = Fach.objects.all()
+        return context
+
+
 class FachList(LoginRequiredMixin, ListView):
     queryset = Fach.objects.prefetch_related('dozent_set', 'testat_set')
