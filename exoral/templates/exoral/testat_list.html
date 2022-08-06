@@ -23,7 +23,7 @@
     <tbody>
       {% for testat in testate %}
       <tr>
-        <td>{{ testat.name }}</td>
+        <td><a href="{% url 'exoral:testat-detail' testat.id %}">{{ testat.name }}</a></td>
         <td>{% if testat.active  %}✓{% else %}✗{% endif %}</td>
         <td>{{ testat.fach.all|join:", " }}</td>
         <td>{{ testat.studiengang.all|join:", " }}</td>
