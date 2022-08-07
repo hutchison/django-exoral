@@ -63,14 +63,49 @@ class Home(LoginRequiredMixin, View):
         return render(request, 'exoral/home.html', context)
 
 
-class TestatList(LoginRequiredMixin, ListView):
+# Testat
+
+class TestatCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'exoral.add_testat'
+
+    model = Testat
+    fields = ['name', 'active', 'fach', 'studiengang', 'studienabschnitt']
+    template_name_suffix = '_create'
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
+        return reverse('exoral:testat-list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['faecher'] = Fach.objects.all()
+        context['studiengaenge'] = Studiengang.objects.all()
+        context['studienabschnitte'] = Studienabschnitt.objects.all()
+        return context
+
+
+class TestatEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'exoral.change_testat'
+
     queryset = Testat.objects.prefetch_related(
         'fach',
         'studiengang',
         'studienabschnitt',
-        'frage_set',
     )
-    context_object_name = 'testate'
+    fields = ['name', 'active', 'fach', 'studiengang', 'studienabschnitt']
+    pk_url_kwarg = 'testat_id'
+    template_name_suffix = '_edit'
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
+        return reverse('exoral:testat-detail', kwargs={'testat_id': self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['faecher'] = Fach.objects.all()
+        context['studiengaenge'] = Studiengang.objects.all()
+        context['studienabschnitte'] = Studienabschnitt.objects.all()
+        return context
 
 
 class TestatDetail(LoginRequiredMixin, DetailView):
@@ -99,136 +134,17 @@ class TestatDetail(LoginRequiredMixin, DetailView):
         return context
 
 
-class TestatEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    permission_required = 'exoral.change_testat'
-
+class TestatList(LoginRequiredMixin, ListView):
     queryset = Testat.objects.prefetch_related(
         'fach',
         'studiengang',
         'studienabschnitt',
+        'frage_set',
     )
-    fields = ['name', 'active', 'fach', 'studiengang', 'studienabschnitt']
-    pk_url_kwarg = 'testat_id'
-    template_name_suffix = '_edit'
-
-    def get_success_url(self):
-        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
-        return reverse('exoral:testat-detail', kwargs={'testat_id': self.object.id})
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['faecher'] = Fach.objects.all()
-        context['studiengaenge'] = Studiengang.objects.all()
-        context['studienabschnitte'] = Studienabschnitt.objects.all()
-        return context
+    context_object_name = 'testate'
 
 
-class TestatCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required = 'exoral.add_testat'
-
-    model = Testat
-    fields = ['name', 'active', 'fach', 'studiengang', 'studienabschnitt']
-    template_name_suffix = '_create'
-
-    def get_success_url(self):
-        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
-        return reverse('exoral:testat-list')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['faecher'] = Fach.objects.all()
-        context['studiengaenge'] = Studiengang.objects.all()
-        context['studienabschnitte'] = Studienabschnitt.objects.all()
-        return context
-
-
-class FrageList(LoginRequiredMixin, ListView):
-    model = Frage
-    context_object_name = 'fragen'
-
-    def dispatch(self, request, *args, **kwargs):
-        self.testat = get_object_or_404(Testat, pk=self.kwargs['testat_id'])
-        self.pruefer = get_object_or_404(Dozent, pk=self.kwargs['pruefer_id'])
-        return super().dispatch(request, *args, **kwargs)
-
-    def get_queryset(self):
-        fragen = Frage.objects.filter(
-            testat=self.testat,
-            pruefer=self.pruefer,
-        ).prefetch_related(
-            'abgestimmte_benutzer'
-        ).order_by(
-            '-punkte', '-datum'
-        )
-        user = self.request.user
-
-        for frage in fragen:
-            frage.abgestimmt = user in frage.abgestimmte_benutzer.all()
-
-        return fragen
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update({'testat': self.testat, 'pruefer': self.pruefer})
-        return context
-
-
-class FrageEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    permission_required = 'exoral.change_frage'
-
-    model = Frage
-    fields = ['datum', 'text', 'antwort', 'pruefer', 'testat']
-    pk_url_kwarg = 'frage_id'
-    template_name_suffix = '_edit'
-
-    def get_success_url(self):
-        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
-        return reverse('exoral:frage-edit', kwargs={'frage_id': self.object.id})
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['dozenten'] = Dozent.objects.all()
-        context['testate'] = Testat.objects.all()
-        return context
-
-
-class FrageDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    permission_required = 'exoral.delete_frage'
-
-    model = Frage
-    pk_url_kwarg = 'frage_id'
-
-    def get_success_url(self):
-        testat = self.object.testat
-        pruefer = self.object.pruefer
-        messages.add_message(self.request, messages.SUCCESS, 'Gelöscht!')
-        return reverse(
-            'exoral:frage-list',
-            kwargs={'testat_id': testat.id, 'pruefer_id': pruefer.id}
-        )
-
-
-class FrageUpvote(LoginRequiredMixin, View):
-    def get(self, request, frage_id):
-        frage = get_object_or_404(Frage, pk=frage_id)
-        frage.upvote(request.user)
-        return redirect(
-            'exoral:frage-list',
-            testat_id=frage.testat.id,
-            pruefer_id=frage.pruefer.id,
-        )
-
-
-class FrageDownvote(LoginRequiredMixin, View):
-    def get(self, request, frage_id):
-        frage = get_object_or_404(Frage, pk=frage_id)
-        frage.downvote(request.user)
-        return redirect(
-            'exoral:frage-list',
-            testat_id=frage.testat.id,
-            pruefer_id=frage.pruefer.id,
-        )
-
+# Frage
 
 class FrageCreate(LoginRequiredMixin, View):
     model = Frage
@@ -282,14 +198,95 @@ class FrageCreate(LoginRequiredMixin, View):
         )
 
 
-class DozentList(LoginRequiredMixin, ListView):
-    queryset = Dozent.objects.prefetch_related('fach')
+class FrageEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'exoral.change_frage'
+
+    model = Frage
+    fields = ['datum', 'text', 'antwort', 'pruefer', 'testat']
+    pk_url_kwarg = 'frage_id'
+    template_name_suffix = '_edit'
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
+        return reverse('exoral:frage-edit', kwargs={'frage_id': self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['dozenten'] = Dozent.objects.all()
+        context['testate'] = Testat.objects.all()
+        return context
 
 
-class DozentDetail(LoginRequiredMixin, DetailView):
-    model = Dozent
-    pk_url_kwarg = 'dozent_id'
+class FrageList(LoginRequiredMixin, ListView):
+    model = Frage
+    context_object_name = 'fragen'
 
+    def dispatch(self, request, *args, **kwargs):
+        self.testat = get_object_or_404(Testat, pk=self.kwargs['testat_id'])
+        self.pruefer = get_object_or_404(Dozent, pk=self.kwargs['pruefer_id'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        fragen = Frage.objects.filter(
+            testat=self.testat,
+            pruefer=self.pruefer,
+        ).prefetch_related(
+            'abgestimmte_benutzer'
+        ).order_by(
+            '-punkte', '-datum'
+        )
+        user = self.request.user
+
+        for frage in fragen:
+            frage.abgestimmt = user in frage.abgestimmte_benutzer.all()
+
+        return fragen
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({'testat': self.testat, 'pruefer': self.pruefer})
+        return context
+
+
+class FrageDelete(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'exoral.delete_frage'
+
+    model = Frage
+    pk_url_kwarg = 'frage_id'
+
+    def get_success_url(self):
+        testat = self.object.testat
+        pruefer = self.object.pruefer
+        messages.add_message(self.request, messages.SUCCESS, 'Gelöscht!')
+        return reverse(
+            'exoral:frage-list',
+            kwargs={'testat_id': testat.id, 'pruefer_id': pruefer.id}
+        )
+
+
+class FrageUpvote(LoginRequiredMixin, View):
+    def get(self, request, frage_id):
+        frage = get_object_or_404(Frage, pk=frage_id)
+        frage.upvote(request.user)
+        return redirect(
+            'exoral:frage-list',
+            testat_id=frage.testat.id,
+            pruefer_id=frage.pruefer.id,
+        )
+
+
+class FrageDownvote(LoginRequiredMixin, View):
+    def get(self, request, frage_id):
+        frage = get_object_or_404(Frage, pk=frage_id)
+        frage.downvote(request.user)
+        return redirect(
+            'exoral:frage-list',
+            testat_id=frage.testat.id,
+            pruefer_id=frage.pruefer.id,
+        )
+
+
+# Dozent
 
 class DozentCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     permission_required = 'exoral.add_dozent'
@@ -325,8 +322,26 @@ class DozentEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         return context
 
 
-class FachList(LoginRequiredMixin, ListView):
-    queryset = Fach.objects.prefetch_related('dozent_set', 'testat_set')
+class DozentDetail(LoginRequiredMixin, DetailView):
+    model = Dozent
+    pk_url_kwarg = 'dozent_id'
+
+
+class DozentList(LoginRequiredMixin, ListView):
+    queryset = Dozent.objects.prefetch_related('fach')
+
+
+# Fach
+
+class FachCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'exoral.add_fach'
+    model = Fach
+    fields = ['name']
+    template_name_suffix = '_create'
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
+        return reverse('exoral:fach-list')
 
 
 class FachEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
@@ -342,12 +357,5 @@ class FachEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         return reverse('exoral:fach-list')
 
 
-class FachCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    permission_required = 'exoral.add_fach'
-    model = Fach
-    fields = ['name']
-    template_name_suffix = '_create'
-
-    def get_success_url(self):
-        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
-        return reverse('exoral:fach-list')
+class FachList(LoginRequiredMixin, ListView):
+    queryset = Fach.objects.prefetch_related('dozent_set', 'testat_set')
