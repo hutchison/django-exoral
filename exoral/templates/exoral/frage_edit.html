@@ -43,7 +43,11 @@
       <label for="antwort">Antwort</label>
       <textarea class="form-control" id="antwort" name="antwort" rows=3>{{ frage.antwort }}</textarea>
     </div>
-    <input type="submit" class="btn btn-primary" value="Speichern">
+    <div class="form-row">
+      <div class="form-group col">
+        <input type="submit" class="btn btn-primary" value="Speichern">
+      </div>
+    </div>
   </form>
 </div>
 {% endblock content %}

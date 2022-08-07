@@ -47,7 +47,11 @@
       <input type="checkbox" class="form-check-input" id="id_aktiv" name="aktiv"{% if dozent.aktiv %} checked{% endif %}>
       <label class="form-check-label" for="id_aktiv">ist aktiv</label>
     </div>
-    <input type="submit" class="btn btn-primary" value="Speichern">
+    <div class="form-row">
+      <div class="form-group col">
+        <input type="submit" class="btn btn-primary" value="Speichern">
+      </div>
+    </div>
   </form>
 </div>
 {% endblock content %}
