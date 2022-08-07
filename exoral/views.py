@@ -99,6 +99,31 @@ class TestatDetail(LoginRequiredMixin, DetailView):
         return context
 
 
+class TestatEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'exoral.change_testat'
+
+    queryset = Testat.objects.prefetch_related(
+        'fach',
+        'studiengang',
+        'studienabschnitt',
+    )
+    fields = ['name', 'active', 'fach', 'studiengang', 'studienabschnitt']
+    pk_url_kwarg = 'testat_id'
+    template_name_suffix = '_edit'
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
+        return reverse('exoral:testat-detail', kwargs={'testat_id': self.object.id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['faecher'] = Fach.objects.all()
+        context['studiengaenge'] = Studiengang.objects.all()
+        context['studienabschnitte'] = Studienabschnitt.objects.all()
+        return context
+
+
+
 class FrageList(LoginRequiredMixin, ListView):
     model = Frage
     context_object_name = 'fragen'

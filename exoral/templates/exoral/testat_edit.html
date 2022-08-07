@@ -1,0 +1,92 @@
+{% extends "exoral/base.html" %}
+
+{% load static sekizai_tags %}
+
+{% block css %}
+{% addtoblock "css" %}
+<link rel="stylesheet" href="{% static 'exoral/select2/css/select2.min.css' %}" type="text/css" media="screen" title="select2" charset="utf-8">
+{% endaddtoblock %}
+{% endblock css %}
+
+{% block js %}
+{% addtoblock "js" %}
+<script src="{% static 'exoral/select2/js/select2.min.js' %}"></script>
+<script charset="utf-8" type="text/javascript">
+  $(document).ready(
+    function() {
+      $('#id_fach').select2();
+      $('#id_studiengang').select2();
+      $('#id_studienabschnitt').select2();
+    }
+  );
+</script>
+{% endaddtoblock %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:home' %}">Start</a></li>
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:testat-list' %}">Testate</a></li>
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:testat-detail' testat.id %}">{{ testat }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">bearbeiten</li>
+    </ol>
+  </nav>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group col">
+        <label for="id_name"><strong>Name</strong></label>
+        <input type="text" class="form-control" id="id_name" name="name" value="{{ testat.name }}" required>
+      </div>
+    </div>
+    <div class="form-group form-check">
+      <input type="checkbox" class="form-check-input" id="id_active" name="active"{% if testat.active %} checked{% endif %}>
+      <label class="form-check-label" for="id_active">ist aktiv</label>
+    </div>
+    <div class="form-group">
+      <label for="id_fach">Fächer</label>
+      <select class="form-control" id="id_fach" name="fach" multiple required>
+        {% for fach in faecher %}
+        <option value="{{ fach.id }}" {% if fach in testat.fach.all %}selected{% endif %}>{{ fach }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="id_studiengang">Studiengänge</label>
+      <select class="form-control" id="id_studiengang" name="studiengang" multiple required>
+        {% for studiengang in studiengaenge %}
+        <option value="{{ studiengang.id }}" {% if studiengang in testat.studiengang.all %}selected{% endif %}>{{ studiengang }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="id_studienabschnitt">Studienabschnitte</label>
+      <select class="form-control" id="id_studienabschnitt" name="studienabschnitt" multiple required>
+        {% for studienabschnitt in studienabschnitte %}
+        <option value="{{ studienabschnitt.id }}" {% if studienabschnitt in testat.studienabschnitt.all %}selected{% endif %}>{{ studienabschnitt }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group col">
+        <input type="submit" class="btn btn-primary" value="Speichern">
+      </div>
+    </div>
+  </form>
+
+  <div class="row">
+    <div class="col">
+      <div class="alert alert-danger">
+        Wenn du das gesamte Testat löschen willst, dann erledige das <a class="alert-link" href="{% url 'admin:exoral_testat_change' testat.id %}">über die Admin-Oberfläche</a>.
+        {% if not user.is_staff %}
+        Dafür musst du von einem Administrator den <em>Mitarbeiter-Status</em> erhalten. Wende dich an die Admins, damit sie dir das Häkchen setzen.
+        {% endif %}
+        Bedenke, dass beim Löschen eines Testats auch alle dazugehörigen Fragen und Punkte gelöscht werden. In der Admin-Oberfläche siehst du genau, was dazu gelöscht wird.
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

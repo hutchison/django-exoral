@@ -7,6 +7,9 @@
       <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:home' %}">Start</a></li>
       <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:testat-list' %}">Testate</a></li>
       <li class="breadcrumb-item active" aria-current="page">{{ testat }}</li>
+      {% if perms.exoral.change_testat %}
+      <li class="breadcrumb-item" aria-current="page"><a href="{% url 'exoral:testat-edit' testat.id %}">bearbeiten</a></li>
+      {% endif %}
     </ol>
   </nav>
 
