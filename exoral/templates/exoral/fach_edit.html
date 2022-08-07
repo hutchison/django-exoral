@@ -24,5 +24,17 @@
       </div>
     </div>
   </form>
+
+  <div class="row">
+    <div class="col">
+      <div class="alert alert-danger">
+        Wenn du das gesamte Fach löschen willst, dann erledige das <a class="alert-link" href="{% url 'admin:exoral_fach_change' fach.id %}">über die Admin-Oberfläche</a>.
+        {% if not user.is_staff %}
+        Dafür musst du von einem Administrator den <em>Mitarbeiter-Status</em> erhalten. Wende dich an die Admins, damit sie dir das Häkchen setzen.
+        {% endif %}
+        Bedenke, dass beim Löschen eines Fachs auch alle dazugehörigen Dozenten und Fragen gelöscht werden. In der Admin-Oberfläche siehst du genau, was dazu gelöscht wird.
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock content %}
