@@ -11,46 +11,7 @@
     </ol>
   </nav>
 
-  <form method="post">
-    {% csrf_token %}
-    <div class="form-row">
-      <div class="form-group col">
-        <label for="id_titel"><strong>Titel</strong></label>
-        <input type="text" class="form-control" id="id_titel" name="titel" value="{{ dozent.titel }}">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col">
-        <label for="id_vorname"><strong>Vorname</strong></label>
-        <input type="text" class="form-control" id="id_vorname" name="vorname" value="{{ dozent.vorname }}">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col">
-        <label for="id_nachname"><strong>Nachname</strong></label>
-        <input type="text" class="form-control" id="id_nachname" name="nachname" value="{{ dozent.nachname }}" required>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col">
-        <label for="id_fach"><strong>Fach</strong></label>
-        <select name="fach" id="id_fach" class="custom-select" required>
-          {% for fach in faecher %}
-          <option value="{{ fach.id }}"{% if dozent.fach == fach %} selected{% endif %}>{{ fach }}</option>
-          {% endfor %}
-        </select>
-      </div>
-    </div>
-    <div class="form-group form-check">
-      <input type="checkbox" class="form-check-input" id="id_aktiv" name="aktiv"{% if dozent.aktiv %} checked{% endif %}>
-      <label class="form-check-label" for="id_aktiv">ist aktiv</label>
-    </div>
-    <div class="form-row">
-      <div class="form-group col">
-        <input type="submit" class="btn btn-primary" value="Speichern">
-      </div>
-    </div>
-  </form>
+  {% include "exoral/dozent_form.html" %}
 
   <div class="row">
     <div class="col">

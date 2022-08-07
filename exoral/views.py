@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views import View
 from django.views.generic import DetailView, ListView
-from django.views.generic.edit import UpdateView, DeleteView
+from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.contrib import messages
 
 from .models import (
@@ -122,6 +122,24 @@ class TestatEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
         context['studienabschnitte'] = Studienabschnitt.objects.all()
         return context
 
+
+class TestatCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'exoral.add_testat'
+
+    model = Testat
+    fields = ['name', 'active', 'fach', 'studiengang', 'studienabschnitt']
+    template_name_suffix = '_create'
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
+        return reverse('exoral:testat-list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['faecher'] = Fach.objects.all()
+        context['studiengaenge'] = Studiengang.objects.all()
+        context['studienabschnitte'] = Studienabschnitt.objects.all()
+        return context
 
 
 class FrageList(LoginRequiredMixin, ListView):
@@ -273,6 +291,22 @@ class DozentDetail(LoginRequiredMixin, DetailView):
     pk_url_kwarg = 'dozent_id'
 
 
+class DozentCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'exoral.add_dozent'
+    model = Dozent
+    fields = ['titel', 'vorname', 'nachname', 'aktiv', 'fach']
+    template_name_suffix = '_create'
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
+        return reverse('exoral:dozent-list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['faecher'] = Fach.objects.all()
+        return context
+
+
 class DozentEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     permission_required = 'exoral.change_dozent'
 
@@ -302,6 +336,17 @@ class FachEdit(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     fields = ['name']
     pk_url_kwarg = 'fach_id'
     template_name_suffix = '_edit'
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')
+        return reverse('exoral:fach-list')
+
+
+class FachCreate(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'exoral.add_fach'
+    model = Fach
+    fields = ['name']
+    template_name_suffix = '_create'
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, 'Gespeichert!')

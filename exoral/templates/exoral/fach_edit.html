@@ -10,20 +10,7 @@
     </ol>
   </nav>
 
-  <form method="post">
-    {% csrf_token %}
-    <div class="form-row">
-      <div class="form-group col">
-        <label for="id_name"><strong>Name</strong></label>
-        <input type="text" class="form-control" id="id_name" name="name" value="{{ fach.name }}" required>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group col">
-        <input type="submit" class="btn btn-primary" value="Speichern">
-      </div>
-    </div>
-  </form>
+  {% include "exoral/fach_form.html" %}
 
   <div class="row">
     <div class="col">

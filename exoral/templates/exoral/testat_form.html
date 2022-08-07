@@ -1,0 +1,42 @@
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group col">
+        <label for="id_name"><strong>Name</strong></label>
+        <input type="text" class="form-control" id="id_name" name="name" value="{{ testat.name }}" required>
+      </div>
+    </div>
+    <div class="form-group form-check">
+      <input type="checkbox" class="form-check-input" id="id_active" name="active"{% if testat.active %} checked{% endif %}>
+      <label class="form-check-label" for="id_active">ist aktiv</label>
+    </div>
+    <div class="form-group">
+      <label for="id_fach">Fächer</label>
+      <select class="form-control" id="id_fach" name="fach" multiple required>
+        {% for fach in faecher %}
+        <option value="{{ fach.id }}" {% if fach in testat.fach.all %}selected{% endif %}>{{ fach }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="id_studiengang">Studiengänge</label>
+      <select class="form-control" id="id_studiengang" name="studiengang" multiple required>
+        {% for studiengang in studiengaenge %}
+        <option value="{{ studiengang.id }}" {% if studiengang in testat.studiengang.all %}selected{% endif %}>{{ studiengang }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="id_studienabschnitt">Studienabschnitte</label>
+      <select class="form-control" id="id_studienabschnitt" name="studienabschnitt" multiple required>
+        {% for studienabschnitt in studienabschnitte %}
+        <option value="{{ studienabschnitt.id }}" {% if studienabschnitt in testat.studienabschnitt.all %}selected{% endif %}>{{ studienabschnitt }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group col">
+        <input type="submit" class="btn btn-primary" value="Speichern">
+      </div>
+    </div>
+  </form>
