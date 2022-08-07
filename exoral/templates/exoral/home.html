@@ -22,7 +22,6 @@
       {% endif %}
     </div>
   </div>
-  {% if perms.exoral.change_frage %}
   <div class="row">
     <div class="col">
       <h6>Übersichten</h6>
@@ -30,19 +29,11 @@
   </div>
   <div class="row">
     <div class="col">
-      <p>
-        <a href="{% url 'exoral:dozent-list' %}" target="_blank">Dozenten</a>
-      </p>
-    </div>
-    <div class="col">
-      <p>
-        <a href="{% url 'exoral:fach-list' %}" target="_blank">Fächer</a>
-      </p>
-    </div>
-    <div class="col">
-      <p>
-        <a href="{% url 'exoral:testat-list' %}" target="_blank">Testate</a>
-      </p>
+      <ul>
+        <li><a href="{% url 'exoral:dozent-list' %}" target="_blank">Dozenten</a></li>
+        <li><a href="{% url 'exoral:fach-list' %}" target="_blank">Fächer</a></li>
+        <li><a href="{% url 'exoral:testat-list' %}" target="_blank">Testate</a></li>
+      </ul>
     </div>
   </div>
   <div class="row">
@@ -54,15 +45,25 @@
             <th>Frage</th>
             <th>Prüfer:in</th>
             <th>Testat</th>
-            <th>Datum</th>
+            <th style="width: 20ex;">Datum</th>
           </tr>
         </thead>
         <tbody>
           {% for frage in letzte_fragen %}
           <tr>
-            <td><a href="{% url 'exoral:frage-edit' frage.id %}" target="_blank">{{ frage }}</a></td>
-            <td><a href="{% url 'admin:exoral_dozent_change' frage.pruefer.id %}" target="_blank">{{ frage.pruefer }}</a></td>
-            <td><a href="{% url 'admin:exoral_testat_change' frage.testat.id %}" target="_blank">{{ frage.testat }}</a></td>
+            <td>
+              {% if perms.exoral.change_frage %}
+              <a href="{% url 'exoral:frage-edit' frage.id %}" target="_blank">{{ frage }}</a>
+              {% else %}
+              <a href="{% url 'exoral:frage-list' frage.testat.id frage.pruefer.id %}" target="_blank">{{ frage }}</a>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{% url 'exoral:dozent-detail' frage.pruefer.id %}" target="_blank">{{ frage.pruefer }}</a>
+            </td>
+            <td>
+              <a href="{% url 'exoral:testat-detail' frage.testat.id %}" target="_blank">{{ frage.testat }}</a>
+            </td>
             <td>{{ frage.datum }}</td>
           </tr>
           {% endfor %}
@@ -70,6 +71,5 @@
       </table>
     </div>
   </div>
-  {% endif %}
 </div>
 {% endblock content %}
